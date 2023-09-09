@@ -1,9 +1,9 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import {from, Observable} from "rxjs";
+import { from, Observable } from 'rxjs';
 
 @Controller('users')
 export class UsersController {
@@ -11,7 +11,7 @@ export class UsersController {
 
   @Get()
   getHello() {
-    return {users: []};
+    return { users: [] };
   }
 
   @MessagePattern('createUser')
