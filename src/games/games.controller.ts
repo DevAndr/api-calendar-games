@@ -1,34 +1,57 @@
-import {Controller, Get} from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
+import { Payload } from '@nestjs/microservices';
 import { GamesService } from './games.service';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
+import { QueryPaginationDto, SearchGameDto } from "./types";
+import { ResponsePaginationAPI } from '../types';
+import { Game } from './entities/game.entity';
 
 @Controller('games')
 export class GamesController {
   constructor(private readonly gamesService: GamesService) {}
-
-  @MessagePattern('createGame')
+  @Post('createGame')
   create(@Payload() createGameDto: CreateGameDto) {
     return this.gamesService.create(createGameDto);
   }
 
-  @MessagePattern('findAllGames')
+  @Get('getGames')
+  async getGames(
+    @Query() query: QueryPaginationDto,
+  ): Promise<ResponsePaginationAPI<Game[]>> {
+    const result = await this.gamesService.findGamesWithPagination(query);
+    return result;
+  }
+
+  @Get('findAllGames')
   findAll() {
     return this.gamesService.findAll();
   }
 
-  @Get('5')
-  findOne(@Payload() id: number) {
-    return this.gamesService.findOne(id);
+  @Get('/id/:id')
+  findById(@Param('id') id: string) {
+    return this.gamesService.findById(id);
   }
 
-  @MessagePattern('updateGame')
+  @Get('search')
+  searchGame(@Query() query: SearchGameDto) {
+    return this.gamesService.searchGame(query);
+  }
+
+  @Put('updateGame')
   update(@Payload() updateGameDto: UpdateGameDto) {
     return this.gamesService.update(updateGameDto.id, updateGameDto);
   }
 
-  @MessagePattern('removeGame')
+  @Delete('removeGame')
   remove(@Payload() id: number) {
     return this.gamesService.remove(id);
   }
