@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import {Controller, Get} from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { GamesService } from './games.service';
 import { CreateGameDto } from './dto/create-game.dto';
@@ -18,7 +18,7 @@ export class GamesController {
     return this.gamesService.findAll();
   }
 
-  @MessagePattern('findOneGame')
+  @Get('5')
   findOne(@Payload() id: number) {
     return this.gamesService.findOne(id);
   }

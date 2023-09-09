@@ -10,7 +10,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
-    // MongooseModule.forRoot('mongodb://root:password123@mongodb-primary:27017'),
+    MongooseModule.forRoot('mongodb://root:password123@mongodb-primary:27017', {dbName: 'game_releases'}),
     GamesModule,
     UsersModule,
     ListsModule,

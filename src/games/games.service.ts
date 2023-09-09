@@ -7,8 +7,7 @@ import { Model } from "mongoose";
 
 @Injectable()
 export class GamesService {
-  // constructor(@InjectModel(Game.name) private gameModel: Model<Game>) {
-  // }
+  constructor(@InjectModel(Game.name) private gameModel: Model<Game>) {}
 
   create(createGameDto: CreateGameDto) {
     return "This action adds a new game";
@@ -19,8 +18,8 @@ export class GamesService {
   }
 
   async findOne(id: number) {
-    // let result = await this.gameModel.findOne({ title: "Thirsty Suitors" });
-    // console.log(result);
+    let result = await this.gameModel.findOne({ title: "Thirsty Suitors" });
+    console.log(result);
     return `This action returns a #${id} game`;
   }
 

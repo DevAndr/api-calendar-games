@@ -3,14 +3,15 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import {from, Observable} from "rxjs";
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  getHello(): string {
-    return "users";
+  getHello() {
+    return {users: []};
   }
 
   @MessagePattern('createUser')
@@ -36,5 +37,10 @@ export class UsersController {
   @MessagePattern('removeUser')
   remove(@Payload() id: number) {
     return this.usersService.remove(id);
+  }
+
+  @MessagePattern({ cmd: 'sum' })
+  accumulate(data: number[]): Observable<number> {
+    return from([1, 2, 3]);
   }
 }
