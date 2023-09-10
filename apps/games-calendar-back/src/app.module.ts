@@ -7,17 +7,17 @@ import { ListsModule } from './lists/lists.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
-    MongooseModule.forRoot(
-      'mongodb://root:password123@localhost:27017/?directConnection=true',
-      {
-        dbName: 'calendar-games',
-      },
-    ),
+    // MongooseModule.forRoot(
+    //   'mongodb://root:password123@localhost:27017/?directConnection=true',
+    //   {
+    //     dbName: 'calendar-games',
+    //   },
+    // ),
     // ClientsModule.register({
     //   clients: [
     //     {
@@ -33,6 +33,16 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     ListsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: 'EMAIL_NOTIFY',
+      useFactory: () => {
+        return ClientProxyFactory.create({
+          transport: Transport.TCP,
+        });
+      },
+    },
+  ],
 })
 export class AppModule {}

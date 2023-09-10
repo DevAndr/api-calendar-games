@@ -5,15 +5,15 @@ import { ACCESS } from '../../types';
   timestamps: true,
 })
 export class List {
-  @Prop()
+  @Prop({type: String})
   title: string;
 
-  @Prop()
+  @Prop({type: String})
   access: ACCESS;
 
-  @Prop()
+  @Prop({type: Array<String>})
   games: string[];
 
-  @Prop()
+  @Prop({type: String})
   description: string;
 }
