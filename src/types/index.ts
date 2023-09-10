@@ -8,7 +8,8 @@ export interface Pagination {
 
 export interface ResponseAPI<D> {
   data: D;
-  error: string;
+  error?: string;
+  message?: string;
 }
 
 export interface ResponsePaginationAPI<D> {
@@ -19,5 +20,10 @@ export interface ResponsePaginationAPI<D> {
 
 export enum ACCESS {
   PUBLIC = 'public',
-  PRIVATE = 'private'
+  PRIVATE = 'private',
+}
+
+// notify microservice
+export enum TYPE_EVENTS_EMAIL_NOTIFY {
+  SEND_CONFIRM_CODE = 'SEND_CONFIRM_CODE',
 }

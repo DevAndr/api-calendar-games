@@ -1,5 +1,5 @@
-import { IsInt, IsNumber, Min } from "class-validator";
-import { Type } from "class-transformer";
+import { IsInt, IsNumber, Min } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export interface IQueryPagination {
   limit: number;
