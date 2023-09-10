@@ -11,9 +11,7 @@ describe('EmailNotifyController', () => {
       providers: [EmailNotifyService],
     }).compile();
 
-    emailNotifyController = app.get<EmailNotifyController>(
-      EmailNotifyController,
-    );
+    emailNotifyController = app.get<EmailNotifyController>(EmailNotifyController);
   });
 
   describe('root', () => {
