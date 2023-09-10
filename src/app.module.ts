@@ -7,6 +7,7 @@ import { ListsModule } from './lists/lists.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -17,10 +18,19 @@ import { AuthModule } from './auth/auth.module';
         dbName: 'calendar-games',
       },
     ),
+    // ClientsModule.register({
+    //   clients: [
+    //     {
+    //       name: 'EMAIL_NOTIFY',
+    //       transport: Transport.TCP,
+    //     },
+    //   ],
+    //   isGlobal: true,
+    // }),
+    AuthModule,
     GamesModule,
     UsersModule,
     ListsModule,
-    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,5 @@
-import { Prop, Schema } from "@nestjs/mongoose";
-import { ACCESS } from "../../types";
+import { Prop, Schema } from '@nestjs/mongoose';
+import { ACCESS } from '../../types';
 
 @Schema({
   timestamps: true,

@@ -11,7 +11,7 @@ import { Payload } from '@nestjs/microservices';
 import { GamesService } from './games.service';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
-import { QueryPaginationDto, SearchGameDto } from "./types";
+import { QueryPaginationDto, SearchGameDto } from './types';
 import { ResponsePaginationAPI } from '../types';
 import { Game } from './entities/game.entity';
 
