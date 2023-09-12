@@ -1,8 +1,32 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
+  "sourceRoot": "apps/games-calendar-back/src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "webpack": false,
+    "tsConfigPath": "apps/games-calendar-back/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/games-calendar-back",
+  "projects": {
+    "games-calendar-back": {
+      "type": "application",
+      "root": "apps/games-calendar-back",
+      "entryFile": "main",
+      "sourceRoot": "apps/games-calendar-back/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/games-calendar-back/tsconfig.app.json"
+      }
+    },
+    "email-notify": {
+      "type": "application",
+      "root": "apps/email-notify",
+      "entryFile": "main",
+      "sourceRoot": "apps/email-notify/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/email-notify/tsconfig.app.json"
+      }
+    }
   }
 }

@@ -16,6 +16,11 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@server/*": ["./apps/games-calendar-back/src/*"],
+      "@email/*": ["./apps/email-notify/src/*"],
+    }
   }
 }
+

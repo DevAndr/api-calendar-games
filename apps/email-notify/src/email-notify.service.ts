@@ -1,0 +1,37 @@
+import { Injectable } from '@nestjs/common';
+import * as nodemailer from 'nodemailer';
+import { CreateUserEventDto } from '@email/dto/create-user-event.dto';
+import { Transporter } from 'nodemailer';
+
+@Injectable()
+export class EmailNotifyService {
+  transporter: Transporter;
+  constructor() {
+    this.transporter = nodemailer.createTransport({
+      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: 'fdf@gmail.com', // your Gmail email address
+        pass: 'fsdfsdf', // your Gmail password (use app-specific password for security)
+      },
+    });
+  }
+  sendConfirmCode(data: CreateUserEventDto) {
+    const mailOptions = {
+      from: 'UnDeadGamesOfficial@gmail.com',
+      to: data.email,
+      subject: 'Код подтверждения',
+      text: `Ваш код подтверждения: ${data.confirmationCode}`,
+    };
+
+    this.transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email: ', error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+  }
+}
