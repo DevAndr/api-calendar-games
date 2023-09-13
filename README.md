@@ -2,6 +2,10 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
+Full work time:
+
+[![wakatime](https://wakatime.com/badge/user/5ddacf2a-d840-478d-8cfe-492bd450e99b/project/c4a3777c-12d8-4642-b7a7-1945460db7e4.svg)](https://wakatime.com/badge/user/5ddacf2a-d840-478d-8cfe-492bd450e99b/project/c4a3777c-12d8-4642-b7a7-1945460db7e4)
+
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
