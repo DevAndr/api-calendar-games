@@ -1,5 +1,5 @@
 import { Prop, Schema } from '@nestjs/mongoose';
-import { IUser } from "../types";
+import { IUser } from '../types';
 
 @Schema()
 export class User implements IUser {
@@ -12,4 +12,6 @@ export class User implements IUser {
   confirmationCode: string;
   @Prop({ type: String })
   isConfirm: boolean;
+  @Prop({ type: String })
+  hashRefreshToken: string;
 }

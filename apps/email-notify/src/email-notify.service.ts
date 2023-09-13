@@ -13,8 +13,8 @@ export class EmailNotifyService {
       port: 587,
       secure: false,
       auth: {
-        user: 'fdf@gmail.com', // your Gmail email address
-        pass: 'fsdfsdf', // your Gmail password (use app-specific password for security)
+        user: 'gamereleases09@gmail.com',
+        pass: 'aslh zbgx fbkv ikyr',
       },
     });
   }

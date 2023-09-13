@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ListsService } from './lists.service';
 import { CreateListDto } from './dto/create-list.dto';
@@ -8,28 +8,28 @@ import { UpdateListDto } from './dto/update-list.dto';
 export class ListsController {
   constructor(private readonly listsService: ListsService) {}
 
-  @MessagePattern('createList')
+  @Post('createList')
   create(@Payload() createListDto: CreateListDto) {
     return this.listsService.create(createListDto);
   }
 
-  @MessagePattern('findAllLists')
+  @Get('findAllLists')
   findAll() {
-    return this.listsService.findAll();
+    return this.listsService.findAll('');
   }
 
-  @MessagePattern('findOneList')
-  findOne(@Payload() id: number) {
+  @Get('findOneList/:id')
+  findOne(@Param('id') id: string) {
     return this.listsService.findOne(id);
   }
 
-  @MessagePattern('updateList')
+  @Post('updateList')
   update(@Payload() updateListDto: UpdateListDto) {
     return this.listsService.update(updateListDto.id, updateListDto);
   }
 
-  @MessagePattern('removeList')
-  remove(@Payload() id: number) {
+  @Delete('removeList')
+  remove(@Payload() id: string) {
     return this.listsService.remove(id);
   }
 }

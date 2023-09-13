@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { GamesModule } from './games/games.module';
 import { UsersModule } from './users/users.module';
 import { ListsModule } from './lists/lists.module';
-import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import {
@@ -12,6 +12,11 @@ import {
   ClientsModule,
   Transport,
 } from '@nestjs/microservices';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from '@server/guards/JwtGuard';
+import { JwtModule } from '@nestjs/jwt';
+import { RefreshTokenStrategy } from '@server/auth/strategy/refresh-token.strategy';
+import { AccessTokenStrategy } from '@server/auth/strategy';
 
 @Module({
   imports: [
@@ -22,6 +27,7 @@ import {
         dbName: 'calendar-games',
       },
     ),
+    JwtModule.register({}),
     ClientsModule.register({
       clients: [
         {
@@ -42,19 +48,13 @@ import {
   ],
   controllers: [AppController],
   providers: [
+    AccessTokenStrategy,
+    RefreshTokenStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
     AppService,
-    // {
-    //   provide: 'EMAIL_SERVICE',
-    //   inject: [ConfigService],
-    //   useFactory: (configService: ConfigService) =>
-    //     ClientProxyFactory.create({
-    //       transport: Transport.TCP,
-    //       options: {
-    //         host: 'localhost',
-    //         port: 3031,
-    //       },
-    //     }),
-    // },
   ],
 })
 export class AppModule {}

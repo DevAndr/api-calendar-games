@@ -37,11 +37,20 @@ export class UsersService {
       hashedPassword: user.hashedPassword,
       confirmationCode: user.confirmationCode,
       isConfirm: user.isConfirm,
+      hashRefreshToken: user.hashRefreshToken,
     };
+  }
+
+  async findById(id: string) {
+    return this.userModel.findById(id).exec();
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
+  }
+
+  async updateHashRT(id: string, hashRT: string) {
+    return this.userModel.findByIdAndUpdate(id, { hashRefreshToken: hashRT });
   }
 
   remove(id: string) {

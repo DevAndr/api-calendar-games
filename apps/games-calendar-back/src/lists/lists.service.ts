@@ -11,23 +11,23 @@ export class ListsService {
   constructor(
     @InjectModel(List.name) private readonly listModel: Model<List>,
   ) {}
-  create(createListDto: CreateListDto) {
-    return 'This action adds a new list';
+  async create(createListDto: CreateListDto) {
+    return this.listModel.create(createListDto);
   }
 
-  findAll() {
-    return `This action returns all lists`;
+  findAll(uid: string) {
+    return this.listModel.find({ uid });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} list`;
+  findOne(id: string) {
+    return this.listModel.findById(id);
   }
 
-  update(id: number, updateListDto: UpdateListDto) {
-    return `This action updates a #${id} list`;
+  update(id: string, updateListDto: UpdateListDto) {
+    return this.listModel.findByIdAndUpdate(id, updateListDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} list`;
+  remove(id: string) {
+    return this.listModel.findByIdAndRemove(id);
   }
 }

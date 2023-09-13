@@ -9,13 +9,13 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import * as bcrypt from 'bcrypt';
+import * as argon2 from 'argon2';
 import { ResponseAPI, TYPE_EVENTS_EMAIL_NOTIFY } from '../types';
 import { generateCodeConfirm } from '../utils';
 import { ConfirmAccountDto } from './dto/confirm-account.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateConfirmEventDto } from './dto/create-confirm-event.dto';
-import { IUser, ThinUser } from "../users/types";
+import { AuthUser } from '../users/types';
 
 @Injectable()
 export class AuthService {
@@ -25,19 +25,23 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signIn(data: LoginDto) {
+  async signIn(data: LoginDto): Promise<ResponseAPI<AuthUser>> {
     const user = await this.usersService.findByEmail(data.email);
-    const isMatch = await bcrypt.compare(data.password, user.hashedPassword);
+    const isMatch = await argon2.verify(data.password, user.hashedPassword);
     if (!isMatch) {
       throw new UnauthorizedException();
     }
-    const payload = { sub: user._id, username: user.email };
+
+    const tokens = await this.getTokens(user._id.toString(), user.email);
+    await this.updateRefreshToken(user._id.toString(), tokens.refreshToken);
+
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      message: 'User sig in successfully',
+      data: { email: user.email, isConfirm: user.isConfirm, tokens },
     };
   }
 
-  async signUp(data: CreateUserDto): Promise<ResponseAPI<ThinUser>> {
+  async signUp(data: CreateUserDto): Promise<ResponseAPI<AuthUser>> {
     const { email, password } = data;
 
     const existingUser = await this.usersService.findByEmail(email);
@@ -47,26 +51,71 @@ export class AuthService {
       );
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await this.hashData(password);
     const confirmationCode = await generateCodeConfirm();
     const newUser = await this.usersService.create({
       email,
       hashedPassword,
       confirmationCode,
-      isConfirm: false
+      isConfirm: false,
     });
 
     this.emailNotifyClient.emit(
       TYPE_EVENTS_EMAIL_NOTIFY.SEND_CONFIRM_CODE,
       new CreateConfirmEventDto(email, confirmationCode),
     );
+
+    const tokens = await this.getTokens(newUser._id.toString(), newUser.email);
+    await this.updateRefreshToken(newUser._id.toString(), tokens.refreshToken);
+
     return {
       message: 'User registered successfully',
-      data: { email: newUser.email, isConfirm: newUser.isConfirm },
+      data: { email: newUser.email, isConfirm: newUser.isConfirm, tokens },
     };
   }
 
-  async confirmAccount(data: ConfirmAccountDto): Promise<ResponseAPI<boolean>> {
+  hashData(data: string) {
+    return argon2.hash(data);
+  }
+
+  async updateRefreshToken(uid: string, refreshToken: string) {
+    const hashedRefreshToken = await this.hashData(refreshToken);
+    await this.usersService.updateHashRT(uid, hashedRefreshToken);
+  }
+
+  async getTokens(uid: string, email: string) {
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(
+        {
+          sub: uid,
+          email,
+        },
+        {
+          secret: 'yourAccessSecretKey',
+          expiresIn: '15m',
+        },
+      ),
+      this.jwtService.signAsync(
+        {
+          sub: uid,
+          email,
+        },
+        {
+          secret: 'yourRefreshSecretKey',
+          expiresIn: '7d',
+        },
+      ),
+    ]);
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  async confirmAccount(
+    data: ConfirmAccountDto,
+  ): Promise<ResponseAPI<{ confirm: boolean }>> {
     const existingUser = await this.usersService.findOne(data.uid);
     if (existingUser) {
       throw new BadRequestException(`Пользователь c uid ${data.uid} не найден`);
@@ -85,7 +134,9 @@ export class AuthService {
 
     return {
       message: 'Аккауни успешно подтвержден',
-      data: true,
+      data: {
+        confirm: true,
+      },
     };
   }
 }
