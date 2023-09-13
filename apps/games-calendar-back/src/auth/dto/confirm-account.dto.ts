@@ -1,9 +1,9 @@
-import { IsNotEmpty } from 'class-validator';
+import {IsNotEmpty} from 'class-validator';
 
 export class ConfirmAccountDto {
-  @IsNotEmpty()
-  uid: string;
+    @IsNotEmpty()
+    uid: string;
 
-  @IsNotEmpty()
-  code: string;
+    @IsNotEmpty()
+    code: string;
 }

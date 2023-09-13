@@ -1,58 +1,51 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
-import { Payload } from '@nestjs/microservices';
-import { GamesService } from './games.service';
-import { CreateGameDto } from './dto/create-game.dto';
-import { UpdateGameDto } from './dto/update-game.dto';
-import { QueryPaginationDto, SearchGameDto } from './types';
-import { ResponsePaginationAPI } from '../types';
-import { Game } from './entities/game.entity';
+import {Controller, Delete, Get, Param, Post, Put, Query,} from '@nestjs/common';
+import {Payload} from '@nestjs/microservices';
+import {GamesService} from './games.service';
+import {CreateGameDto} from './dto/create-game.dto';
+import {UpdateGameDto} from './dto/update-game.dto';
+import {QueryPaginationDto, SearchGameDto} from './types';
+import {ResponsePaginationAPI} from '../types';
+import {Game} from './entities/game.entity';
 
 @Controller('games')
 export class GamesController {
-  constructor(private readonly gamesService: GamesService) {}
-  @Post('createGame')
-  create(@Payload() createGameDto: CreateGameDto) {
-    return this.gamesService.create(createGameDto);
-  }
+    constructor(private readonly gamesService: GamesService) {
+    }
 
-  @Get('getGames')
-  async getGames(
-    @Query() query: QueryPaginationDto,
-  ): Promise<ResponsePaginationAPI<Game[]>> {
-    const result = await this.gamesService.findGamesWithPagination(query);
-    return result;
-  }
+    @Post('createGame')
+    create(@Payload() createGameDto: CreateGameDto) {
+        return this.gamesService.create(createGameDto);
+    }
 
-  @Get('findAllGames')
-  findAll() {
-    return this.gamesService.findAll();
-  }
+    @Get('getGames')
+    async getGames(
+        @Query() query: QueryPaginationDto,
+    ): Promise<ResponsePaginationAPI<Game[]>> {
+        return this.gamesService.findGamesWithPagination(query);
+    }
 
-  @Get('/id/:id')
-  findById(@Param('id') id: string) {
-    return this.gamesService.findById(id);
-  }
+    @Get('findAllGames')
+    findAll() {
+        return this.gamesService.findAll();
+    }
 
-  @Get('search')
-  searchGame(@Query() query: SearchGameDto) {
-    return this.gamesService.searchGame(query);
-  }
+    @Get('/id/:id')
+    findById(@Param('id') id: string) {
+        return this.gamesService.findById(id);
+    }
 
-  @Put('updateGame')
-  update(@Payload() updateGameDto: UpdateGameDto) {
-    return this.gamesService.update(updateGameDto.id, updateGameDto);
-  }
+    @Get('search')
+    searchGame(@Query() query: SearchGameDto) {
+        return this.gamesService.searchGame(query);
+    }
 
-  @Delete('removeGame')
-  remove(@Payload() id: number) {
-    return this.gamesService.remove(id);
-  }
+    @Put('updateGame')
+    update(@Payload() updateGameDto: UpdateGameDto) {
+        return this.gamesService.update(updateGameDto.id, updateGameDto);
+    }
+
+    @Delete('removeGame')
+    remove(@Payload() id: number) {
+        return this.gamesService.remove(id);
+    }
 }

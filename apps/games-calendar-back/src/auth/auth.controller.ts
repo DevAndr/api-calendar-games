@@ -6,7 +6,6 @@ import {ResponseAPI} from '../types';
 import {PublicDecorator} from '@server/decorators/public.decorator';
 import {JwtService} from "@nestjs/jwt";
 import {GetCurUID, GetCurUser} from "@server/decorators";
-import {RefreshTokenStrategy} from "@server/auth/strategy";
 import {RTGuard} from "@server/guards/refresh-token.guard";
 import {ATGuard} from "@server/guards/access-token.guard";
 

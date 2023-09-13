@@ -1,33 +1,34 @@
-import { Injectable } from '@nestjs/common';
-import { CreateListDto } from './dto/create-list.dto';
-import { UpdateListDto } from './dto/update-list.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Game } from '../games/entities/game.entity';
-import { Model } from 'mongoose';
-import { List } from './entities/list.entity';
+import {Injectable} from '@nestjs/common';
+import {CreateListDto} from './dto/create-list.dto';
+import {UpdateListDto} from './dto/update-list.dto';
+import {InjectModel} from '@nestjs/mongoose';
+import {Model} from 'mongoose';
+import {List} from './entities/list.entity';
 
 @Injectable()
 export class ListsService {
-  constructor(
-    @InjectModel(List.name) private readonly listModel: Model<List>,
-  ) {}
-  async create(createListDto: CreateListDto) {
-    return this.listModel.create(createListDto);
-  }
+    constructor(
+        @InjectModel(List.name) private readonly listModel: Model<List>,
+    ) {
+    }
 
-  findAll(uid: string) {
-    return this.listModel.find({ uid });
-  }
+    async create(createListDto: CreateListDto) {
+        return this.listModel.create(createListDto);
+    }
 
-  findOne(id: string) {
-    return this.listModel.findById(id);
-  }
+    findAll(uid: string) {
+        return this.listModel.find({uid});
+    }
 
-  update(id: string, updateListDto: UpdateListDto) {
-    return this.listModel.findByIdAndUpdate(id, updateListDto);
-  }
+    findOne(id: string) {
+        return this.listModel.findById(id);
+    }
 
-  remove(id: string) {
-    return this.listModel.findByIdAndRemove(id);
-  }
+    update(id: string, updateListDto: UpdateListDto) {
+        return this.listModel.findByIdAndUpdate(id, updateListDto);
+    }
+
+    remove(id: string) {
+        return this.listModel.findByIdAndRemove(id);
+    }
 }

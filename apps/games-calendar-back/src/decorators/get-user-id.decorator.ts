@@ -1,4 +1,4 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import {createParamDecorator, ExecutionContext} from '@nestjs/common';
 import {JwtPayload} from "@server/auth/types";
 
 export const GetCurUID = createParamDecorator((_: undefined, ctx: ExecutionContext): string => {

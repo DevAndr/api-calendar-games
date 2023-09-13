@@ -1,10 +1,10 @@
 export class CreateConfirmEventDto {
-  email: string;
-  confirmationCode: string;
+    email: string;
+    confirmationCode: string;
 
 
-  constructor(email: string, confirmationCode: string) {
-    this.email = email;
-    this.confirmationCode = confirmationCode;
-  }
+    constructor(email: string, confirmationCode: string) {
+        this.email = email;
+        this.confirmationCode = confirmationCode;
+    }
 }
