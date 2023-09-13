@@ -18,9 +18,18 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@server/*": ["./apps/games-calendar-back/src/*"],
-      "@email/*": ["./apps/email-notify/src/*"],
+      "@server/*": [
+        "./apps/games-calendar-back/src/*"
+      ],
+      "@email/*": [
+        "./apps/email-notify/src/*"
+      ],
+      "@app/core": [
+        "libs/core/src"
+      ],
+      "@app/core/*": [
+        "libs/core/src/*"
+      ]
     }
   }
 }
-

@@ -4,7 +4,7 @@ import {AppService} from './app.service';
 import {GamesModule} from './games/games.module';
 import {UsersModule} from './users/users.module';
 import {ListsModule} from './lists/lists.module';
-import {ConfigModule} from '@nestjs/config';
+import {ConfigService} from '@nestjs/config';
 import {MongooseModule} from '@nestjs/mongoose';
 import {AuthModule} from './auth/auth.module';
 import {ClientsModule, Transport,} from '@nestjs/microservices';
@@ -12,14 +12,25 @@ import {APP_GUARD} from '@nestjs/core';
 import {RefreshTokenStrategy} from '@server/auth/strategy/refresh-token.strategy';
 import {AccessTokenStrategy} from '@server/auth/strategy';
 import {JwtAuthGuard} from "@server/guards/jwt-auth.guard";
+import {CoreModule} from "@app/core";
+import * as process from "process";
 
 @Module({
     imports: [
-        ConfigModule.forRoot({envFilePath: '.env', isGlobal: true}),
+        CoreModule,
         MongooseModule.forRoot(
-            'mongodb://root:password123@localhost:27017/?directConnection=true',
+            // {
+            //     imports: [ConfigService],
+            //     inject: [ConfigService],
+            //     useFactory: (config: ConfigService) => ({
+            //         uri: config.get('database.host'),
+            //         dbName: config.get('database.dbName')
+            //     })
+            // }
+
+            process.env.MONGO_HOST,
             {
-                dbName: 'calendar-games',
+                dbName: process.env.MONGO_DB_NAME,
             },
         ),
         // JwtModule.register({}),
@@ -43,6 +54,7 @@ import {JwtAuthGuard} from "@server/guards/jwt-auth.guard";
     ],
     controllers: [AppController],
     providers: [
+        ConfigService,
         AccessTokenStrategy,
         RefreshTokenStrategy,
         {
