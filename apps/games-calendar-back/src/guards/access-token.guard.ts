@@ -4,7 +4,7 @@ import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '@server/decorators/constants';
 
 @Injectable()
-export class JwtAuthGuard extends AuthGuard('jwt-refresh') {
+export class ATGuard extends AuthGuard('jwt') {
   constructor(private reflector: Reflector) {
     super();
   }
@@ -14,11 +14,6 @@ export class JwtAuthGuard extends AuthGuard('jwt-refresh') {
       context.getHandler(),
       context.getClass(),
     ]);
-
-    if (isPublic) {
-      return true;
-    }
-
-    return super.canActivate(context);
+    return isPublic || super.canActivate(context);
   }
 }
