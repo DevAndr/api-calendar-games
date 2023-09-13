@@ -8,15 +8,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import {
-  ClientProxyFactory,
   ClientsModule,
   Transport,
 } from '@nestjs/microservices';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from '@server/guards/JwtGuard';
-import { JwtModule } from '@nestjs/jwt';
 import { RefreshTokenStrategy } from '@server/auth/strategy/refresh-token.strategy';
 import { AccessTokenStrategy } from '@server/auth/strategy';
+import {JwtAuthGuard} from "@server/guards/jwt-auth.guard";
 
 @Module({
   imports: [
@@ -27,7 +25,7 @@ import { AccessTokenStrategy } from '@server/auth/strategy';
         dbName: 'calendar-games',
       },
     ),
-    JwtModule.register({}),
+    // JwtModule.register({}),
     ClientsModule.register({
       clients: [
         {
@@ -52,7 +50,7 @@ import { AccessTokenStrategy } from '@server/auth/strategy';
     RefreshTokenStrategy,
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard,
+      useClass: JwtAuthGuard
     },
     AppService,
   ],
