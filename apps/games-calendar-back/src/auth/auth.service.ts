@@ -1,6 +1,6 @@
 import {
   BadRequestException,
-  ConflictException,
+  ConflictException, ForbiddenException,
   Inject,
   Injectable,
   UnauthorizedException,
@@ -111,6 +111,24 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  async refreshTokens(uid: string, refreshToken: string){
+    const user = await this.usersService.findById(uid);
+    if (!user || !user.hashRefreshToken)
+      throw new ForbiddenException('Access Denied');
+    const refreshTokenMatches = await argon2.verify(
+        user.hashRefreshToken,
+        refreshToken,
+    );
+    if (!refreshTokenMatches) throw new ForbiddenException('Access Denied');
+    const tokens = await this.getTokens(user.id, user.email);
+    await this.updateRefreshToken(user.id, tokens.refreshToken);
+    return tokens;
+  }
+
+  async logOut(uid:string) {
+    this.usersService.update(uid, {hashRefreshToken: null});
   }
 
   async confirmAccount(
