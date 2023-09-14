@@ -1,60 +1,59 @@
-import {Injectable} from '@nestjs/common';
-import {CreateUserDto} from './dto/create-user.dto';
-import {UpdateUserDto} from './dto/update-user.dto';
-import {InjectModel} from '@nestjs/mongoose';
-import mongoose, {Model} from 'mongoose';
-import {User} from './entities/user.entity';
+import { Injectable } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import mongoose, { Model } from 'mongoose';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-    constructor(
-        @InjectModel(User.name) private readonly userModel: Model<User>,
-    ) {
-    }
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+  ) {}
 
-    create(createUserDto: CreateUserDto) {
-        console.log('create', createUserDto);
-        return this.userModel.create(createUserDto);
-    }
+  create(createUserDto: CreateUserDto) {
+    console.log('create', createUserDto);
+    return this.userModel.create(createUserDto);
+  }
 
-    findAll() {
-        return `This action returns all users`;
-    }
+  findAll() {
+    return `This action returns all users`;
+  }
 
-    findOne(id: string) {
-        return this.userModel.findById(id);
-    }
+  findOne(id: string) {
+    return this.userModel.findById(id);
+  }
 
-    async findByEmail(
-        email: string,
-    ): Promise<User & { _id: mongoose.Types.ObjectId }> {
-        const user = await this.userModel.findOne({email}).exec();
+  async findByEmail(
+    email: string,
+  ): Promise<User & { _id: mongoose.Types.ObjectId }> {
+    const user = await this.userModel.findOne({ email }).exec();
 
-        if (!user) return null;
+    if (!user) return null;
 
-        return {
-            _id: user._id,
-            email: user.email,
-            hashedPassword: user.hashedPassword,
-            confirmationCode: user.confirmationCode,
-            isConfirm: user.isConfirm,
-            hashRefreshToken: user.hashRefreshToken,
-        };
-    }
+    return {
+      _id: user._id,
+      email: user.email,
+      hashedPassword: user.hashedPassword,
+      confirmationCode: user.confirmationCode,
+      isConfirm: user.isConfirm,
+      hashRefreshToken: user.hashRefreshToken,
+    };
+  }
 
-    async findById(id: string) {
-        return this.userModel.findById(id).exec();
-    }
+  async findById(id: string) {
+    return this.userModel.findById(id).exec();
+  }
 
-    update(id: string, updateUserDto: UpdateUserDto) {
-        return `This action updates a #${id} user`;
-    }
+  update(id: string, updateUserDto: UpdateUserDto) {
+    return `This action updates a #${id} user`;
+  }
 
-    async updateHashRT(id: string, hashRT: string) {
-        return this.userModel.findByIdAndUpdate(id, {hashRefreshToken: hashRT});
-    }
+  async updateHashRT(id: string, hashRT: string) {
+    return this.userModel.findByIdAndUpdate(id, { hashRefreshToken: hashRT });
+  }
 
-    remove(id: string) {
-        return `This action removes a #${id} user`;
-    }
+  remove(id: string) {
+    return `This action removes a #${id} user`;
+  }
 }

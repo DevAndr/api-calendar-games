@@ -1,6 +1,6 @@
-import {IEvent} from '../types';
+import { IEvent } from '../types';
 
 export class CreateUserEventDto implements IEvent {
-    email: string;
-    confirmationCode: string;
+  email: string;
+  confirmationCode: string;
 }
