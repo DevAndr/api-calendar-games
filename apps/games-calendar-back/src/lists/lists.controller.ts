@@ -10,12 +10,12 @@ export class ListsController {
   constructor(private readonly listsService: ListsService) {}
 
   @Post('createList')
-  create(@Payload() createListDto: CreateListDto) {
-    return this.listsService.create(createListDto);
+  create(@GetCurUID() uid: string, @Payload() createListDto: CreateListDto) {
+    return this.listsService.create({ ...createListDto, uid });
   }
 
   @Get('findAllLists')
-  findAll(@GetCurUID() uid: string) {
+  findAll(@GetCurUID() uid: string): Promise<any> {
     return this.listsService.findAll(uid);
   }
 
