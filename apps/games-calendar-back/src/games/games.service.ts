@@ -74,9 +74,9 @@ export class GamesService {
       error: null,
       data: games,
       pagination: {
-        currentPage: page,
+        currentPage: Number(page),
         total: totalGames,
-        limit,
+        limit: Number(limit),
         isNextPage: true,
         totalPage: Math.ceil(totalGames / limit),
       },

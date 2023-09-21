@@ -6,6 +6,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { Payload } from '@nestjs/microservices';
 import { GamesService } from './games.service';
@@ -14,6 +15,9 @@ import { UpdateGameDto } from './dto/update-game.dto';
 import { QueryPaginationDto, SearchGameDto } from './types';
 import { ResponsePaginationAPI } from '../types';
 import { Game } from './entities/game.entity';
+import { RTGuard } from '@server/guards/refresh-token.guard';
+import { ATGuard } from '@server/guards/access-token.guard';
+import { GetCurUID, PublicDecorator } from '@server/decorators';
 
 @Controller('games')
 export class GamesController {
@@ -26,8 +30,10 @@ export class GamesController {
 
   @Get('getGames')
   async getGames(
+    @GetCurUID() uid: string,
     @Query() query: QueryPaginationDto,
   ): Promise<ResponsePaginationAPI<Game[]>> {
+    console.log('getGames', { uid });
     return this.gamesService.findGamesWithPagination(query);
   }
 
