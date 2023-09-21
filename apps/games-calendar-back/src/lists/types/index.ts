@@ -10,6 +10,10 @@ export interface IListGame {
   access: ACCESS;
 }
 
+export type ListGameThin = IListGame & {
+  _id: string;
+};
+
 export type GameOfListType = {
   id: string;
   rating: number;

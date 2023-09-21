@@ -4,6 +4,8 @@ import { UpdateListDto } from './dto/update-list.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { List } from './entities/list.entity';
+import { ResponseAPI } from '@server/types';
+import { ListGameThin } from '@server/lists/types';
 
 @Injectable()
 export class ListsService {
@@ -11,12 +13,31 @@ export class ListsService {
     @InjectModel(List.name) private readonly listModel: Model<List>,
   ) {}
 
-  async create(createListDto: CreateListDto) {
-    return this.listModel.create(createListDto);
+  async create(
+    createListDto: CreateListDto,
+  ): Promise<ResponseAPI<ListGameThin>> {
+    const list = await this.listModel.create(createListDto);
+    return {
+      error: null,
+      message: null,
+      data: {
+        _id: list.id,
+        uid: list.uid,
+        name: list.name,
+        description: list.description,
+        games: list.games,
+        access: list.access,
+      },
+    };
   }
 
-  findAll(uid: string) {
-    return this.listModel.find({ uid });
+  async findAll(uid: string): Promise<ResponseAPI<List[]>> {
+    const lists = await this.listModel.find({ uid });
+    return {
+      error: null,
+      message: null,
+      data: lists,
+    };
   }
 
   findOne(id: string) {
