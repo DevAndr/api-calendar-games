@@ -9,9 +9,11 @@ export class RTGuard extends AuthGuard('jwt-refresh') {
   }
 
   canActivate(context: ExecutionContext) {
-    if (context.getType() === 'http') {
-      return context.switchToHttp().getRequest();
-    }
+    console.log('RTGuard');
+
+    // if (context.getType() === 'http') {
+    //   return context.switchToHttp().getRequest();
+    // }
 
     return super.canActivate(context);
   }

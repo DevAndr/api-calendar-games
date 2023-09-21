@@ -11,19 +11,21 @@ export class RefreshTokenStrategy extends PassportStrategy(
 ) {
   constructor(private readonly userService: UsersService) {
     super({
-      jwtFromRequest: ExtractJwt.fromBodyField('refreshToken'),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       passReqToCallback: true,
       secretOrKey: 'yourRefreshSecretKey',
     });
   }
 
   async validate(@Request() req: Request, payload: JwtPayload) {
+    // console.log('RefreshTokenStrategy', payload);
     const user = await this.userService.findById(payload.sub);
+
     if (!user) {
       throw new UnauthorizedException();
     }
-    const refreshToken = req.headers
-      .get('Authorization')
+
+    const refreshToken = req.headers['authorization']
       .replace('Bearer', '')
       .trim();
     return { ...payload, refreshToken };

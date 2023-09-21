@@ -9,6 +9,7 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private readonly userService: UsersService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      // ignoreExpiration: false,
       secretOrKey: 'yourAccessSecretKey',
     });
   }
@@ -18,6 +19,8 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
     // if (!user) {
     //   throw new UnauthorizedException();
     // }
+
+    // console.log('AccessTokenStrategy', payload);
     return payload;
   }
 }

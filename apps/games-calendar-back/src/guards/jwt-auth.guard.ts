@@ -2,10 +2,15 @@ import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
+import { AuthService } from '@server/auth/auth.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-  constructor(private reflector: Reflector) {
+  constructor(
+    private reflector: Reflector,
+    private readonly authService: AuthService,
+  ) {
     super();
   }
 
@@ -22,6 +27,20 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       ctx.getHandler(),
       ctx.getClass(),
     ]);
+
+    const request = ctx.switchToHttp().getRequest();
+    const accessToken = request.cookies['accessToken'];
+    const refreshToken = request.cookies['refreshToken'];
+
+    if (accessToken) {
+      ctx.switchToHttp().getRequest().headers[
+        'authorization'
+      ] = `Bearer ${accessToken}`;
+    } else if (refreshToken) {
+      // this.authService.ref(refreshToken);
+    }
+
+    console.log('JwtAuthGuard', accessToken, refreshToken);
 
     return isPublic || super.canActivate(ctx);
   }

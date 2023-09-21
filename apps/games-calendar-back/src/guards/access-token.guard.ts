@@ -9,7 +9,18 @@ export class ATGuard extends AuthGuard('jwt') {
     super();
   }
 
+  // getRequest(ctx: ExecutionContext): any {
+  //   console.log('ATGuard');
+  //   if (ctx.getType() === 'http') {
+  //     const request = ctx.switchToHttp().getRequest();
+  //     console.log('http');
+  //
+  //     return request;
+  //   }
+  // }
+
   canActivate(context: ExecutionContext) {
+    console.log('ATGuard');
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
