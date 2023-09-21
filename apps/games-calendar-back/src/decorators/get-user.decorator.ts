@@ -6,6 +6,9 @@ export const GetCurUser = createParamDecorator(
     if (ctx.getType() === 'http') {
       const req = ctx.switchToHttp().getRequest();
       if (!data) return req.user;
+
+      // if (!req?.user && data === 'refreshToken') return req.cookies[data];
+
       return req.user[data];
     }
   },

@@ -18,9 +18,12 @@ import { ClientProxy } from '@nestjs/microservices';
 import { CreateConfirmEventDto } from './dto/create-confirm-event.dto';
 import { AuthUser } from '../users/types';
 import { ITokens } from '@server/auth/types';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
+  accessTokenExp = '30m';
+  refreshTokenExp = '7d';
   constructor(
     @Inject('EMAIL_SERVICE') private readonly emailNotifyClient: ClientProxy,
     private readonly usersService: UsersService,
@@ -101,7 +104,7 @@ export class AuthService {
         },
         {
           secret: 'yourAccessSecretKey',
-          expiresIn: '15m',
+          expiresIn: this.accessTokenExp,
         },
       ),
       this.jwtService.signAsync(
@@ -111,7 +114,7 @@ export class AuthService {
         },
         {
           secret: 'yourRefreshSecretKey',
-          expiresIn: '7d',
+          expiresIn: this.refreshTokenExp,
         },
       ),
     ]);
@@ -136,8 +139,26 @@ export class AuthService {
     return tokens;
   }
 
+  async ref(refreshToken: string) {
+    console.log(this.jwtService.decode(refreshToken));
+  }
+
   async logOut(uid: string) {
     this.usersService.update(uid, { hashRefreshToken: null });
+  }
+
+  async setTokensCookie(req: Request, tokens: ITokens) {
+    // if (tokens) {
+    req.res.cookie('accessToken', `${tokens.accessToken}`, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 30,
+    });
+
+    req.res.cookie('refreshToken', `${tokens.refreshToken}`, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+    // }
   }
 
   async confirmAccount(

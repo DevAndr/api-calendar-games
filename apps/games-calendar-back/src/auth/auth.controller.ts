@@ -19,6 +19,7 @@ import { RTGuard } from '@server/guards/refresh-token.guard';
 import { ATGuard } from '@server/guards/access-token.guard';
 import { ITokens } from '@server/auth/types';
 import { AuthUser } from '@server/users/types';
+import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -30,15 +31,26 @@ export class AuthController {
   @PublicDecorator()
   @Post('login')
   @HttpCode(HttpStatus.CREATED)
-  signIn(@Body() loginDto: LoginDto) {
-    return this.authService.signIn(loginDto);
+  async signIn(@Req() req: Request, @Body() loginDto: LoginDto) {
+    const auth = await this.authService.signIn(loginDto);
+
+    if (auth?.data?.tokens) {
+      await this.authService.setTokensCookie(req, auth.data.tokens);
+    }
+
+    return auth;
   }
 
   @PublicDecorator()
   @Post('register')
   @HttpCode(HttpStatus.OK)
-  signUp(@Body() data: CreateUserDto): Promise<ResponseAPI<AuthUser>> {
-    return this.authService.signUp(data);
+  async signUp(
+    @Req() req: Request,
+    @Body() data: CreateUserDto,
+  ): Promise<ResponseAPI<AuthUser>> {
+    const sign = await this.authService.signUp(data);
+    await this.authService.setTokensCookie(req, sign?.data?.tokens);
+    return sign;
   }
 
   @Post('logOut')
@@ -58,8 +70,17 @@ export class AuthController {
     @GetCurUser('refreshToken') refreshToken: string,
   ): Promise<ResponseAPI<ITokens>> {
     const tokens = await this.authService.refreshTokens(uid, refreshToken);
+    await this.authService.setTokensCookie(req, tokens);
     return {
       data: tokens,
     };
+  }
+
+  @Get('check')
+  @UseGuards(ATGuard)
+  @HttpCode(HttpStatus.OK)
+  async checkAuth(@GetCurUID() uid: string): Promise<boolean> {
+    console.log(uid);
+    return true;
   }
 }
