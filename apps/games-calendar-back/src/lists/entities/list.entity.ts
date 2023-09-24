@@ -3,6 +3,7 @@ import { ACCESS } from '../../types';
 import { IListGame } from '@server/lists/types';
 import mongoose, { Document } from 'mongoose';
 import { User } from '@server/users/entities/user.entity';
+import { Game } from '@server/games/entities/game.entity';
 
 export type ListDocument = Document & IListGame;
 
@@ -21,8 +22,8 @@ export class List implements IListGame {
   name: string;
   @Prop({ type: String })
   access: ACCESS.PUBLIC | ACCESS.PRIVATE;
-  @Prop()
-  games: GameOfList[];
+  @Prop({ type: Array<mongoose.Schema.Types.ObjectId>, ref: 'Game' })
+  games: Game[];
   @Prop({ type: String })
   description: string;
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
