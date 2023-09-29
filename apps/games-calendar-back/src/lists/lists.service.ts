@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { CreateListDto } from './dto/create-list.dto';
 import { UpdateListDto } from './dto/update-list.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { List } from './entities/list.entity';
+import { Model, Schema, Types } from 'mongoose';
+import { GameOfList, List } from './entities/list.entity';
 import { ResponseAPI } from '@server/types';
 import { ListGameThin } from '@server/lists/types';
+import { AddGamesToListDto } from '@server/lists/dto/add-games-to-list.dto';
 
 @Injectable()
 export class ListsService {
@@ -33,6 +34,7 @@ export class ListsService {
 
   async findAll(uid: string): Promise<ResponseAPI<List[]>> {
     const lists = await this.listModel.find({ uid });
+    console.log(lists[0].games);
     return {
       error: null,
       message: null,
@@ -48,7 +50,24 @@ export class ListsService {
     return this.listModel.findByIdAndUpdate(id, updateListDto);
   }
 
+  async addGames(idList: string, payload: AddGamesToListDto) {
+    return this.listModel.findByIdAndUpdate(
+      idList,
+      {
+        $addToSet: {
+          games: {
+            $each: payload.ids.map((id) => ({
+              id: new Types.ObjectId(id),
+              rating: 0,
+            })),
+          },
+        },
+      },
+      { returnDocument: 'after' },
+    );
+  }
+
   remove(id: string) {
-    return this.listModel.findByIdAndRemove(id);
+    return this.listModel.findByIdAndRemove(new Types.ObjectId(id));
   }
 }

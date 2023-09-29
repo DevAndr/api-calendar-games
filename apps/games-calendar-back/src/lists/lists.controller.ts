@@ -3,11 +3,20 @@ import { Payload } from '@nestjs/microservices';
 import { ListsService } from './lists.service';
 import { CreateListDto } from './dto/create-list.dto';
 import { UpdateListDto } from './dto/update-list.dto';
-import { GetCurUID } from '@server/decorators';
+import { GetCurUID, PublicDecorator } from '@server/decorators';
+import { AddGamesToListDto } from '@server/lists/dto/add-games-to-list.dto';
+import { ResponseAPI } from '@server/types';
+import { ListGameThin } from '@server/lists/types';
+import { GameOfList, List } from '@server/lists/entities/list.entity';
+import { GamesService } from '@server/games/games.service';
+import { Game } from '@server/games/entities/game.entity';
 
 @Controller('lists')
 export class ListsController {
-  constructor(private readonly listsService: ListsService) {}
+  constructor(
+    private readonly listsService: ListsService,
+    private readonly gamesService: GamesService,
+  ) {}
 
   @Post('createList')
   create(@GetCurUID() uid: string, @Payload() createListDto: CreateListDto) {
@@ -15,12 +24,13 @@ export class ListsController {
   }
 
   @Get('findAllLists')
-  findAll(@GetCurUID() uid: string): Promise<any> {
+  findAll(@GetCurUID() uid: string) {
     return this.listsService.findAll(uid);
   }
 
+  @PublicDecorator()
   @Get('findOneList/:id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.listsService.findOne(id);
   }
 
@@ -29,7 +39,47 @@ export class ListsController {
     return this.listsService.update(updateListDto.id, updateListDto);
   }
 
-  @Delete('removeList')
+  @PublicDecorator()
+  @Post('addGames/:id')
+  async addGames(
+    @Param('id') idList: string,
+    @Payload() payload: AddGamesToListDto,
+  ): Promise<ResponseAPI<List>> {
+    return this.listsService
+      .addGames(idList, payload)
+      .then((data) => {
+        return {
+          error: '',
+          data: data,
+          message: '',
+        };
+      })
+      .catch((e) => ({
+        error: '',
+        data: e,
+        message: '',
+      }));
+  }
+
+  @PublicDecorator()
+  @Get('gamesByList/:id')
+  async getGamesByIdList(
+    @Param('id') idList: string,
+  ): Promise<ResponseAPI<Game[]>> {
+    const list = await this.listsService.findOne(idList);
+    const games = await this.gamesService.findGamesByIds(
+      list.games.map((g) => g.id),
+    );
+
+    return {
+      message: '',
+      error: null,
+      data: games,
+    };
+  }
+
+  @PublicDecorator()
+  @Post('removeList')
   remove(@Payload() id: string) {
     return this.listsService.remove(id);
   }
