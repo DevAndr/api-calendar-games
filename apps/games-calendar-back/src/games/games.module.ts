@@ -13,5 +13,6 @@ import { GameSchema } from './schema/Game.schema';
   ],
   controllers: [GamesController],
   providers: [GamesService],
+  exports: [GamesService],
 })
 export class GamesModule {}

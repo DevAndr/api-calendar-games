@@ -90,4 +90,8 @@ export class GamesService {
   remove(id: number) {
     return `This action removes a #${id} game`;
   }
+
+  findGamesByIds(ids: string[]) {
+    return this.gameModel.find({ _id: { $in: ids } });
+  }
 }
