@@ -22,8 +22,8 @@ export class List implements IListGame {
   name: string;
   @Prop({ type: String })
   access: ACCESS.PUBLIC | ACCESS.PRIVATE;
-  @Prop({ type: Array<mongoose.Schema.Types.ObjectId>, ref: 'Game' })
-  games: Game[];
+  @Prop({ type: Array<GameOfList> })
+  games: GameOfList[];
   @Prop({ type: String })
   description: string;
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
