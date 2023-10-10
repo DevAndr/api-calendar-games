@@ -6,6 +6,8 @@ import {
   HttpStatus,
   Post,
   Req,
+  Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -14,7 +16,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ResponseAPI } from '../types';
 import { PublicDecorator } from '@server/decorators/public.decorator';
 import { JwtService } from '@nestjs/jwt';
-import { GetCurUID, GetCurUser } from '@server/decorators';
+import { Cookies, GetCurUID, GetCurUser } from '@server/decorators';
 import { RTGuard } from '@server/guards/refresh-token.guard';
 import { ATGuard } from '@server/guards/access-token.guard';
 import { ITokens } from '@server/auth/types';
@@ -33,7 +35,7 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   async signIn(@Req() req: Request, @Body() loginDto: LoginDto) {
     const auth = await this.authService.signIn(loginDto);
-
+    console.log('login', auth);
     if (auth?.data?.tokens) {
       await this.authService.setTokensCookie(req, auth.data.tokens);
     }
@@ -66,9 +68,15 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async refreshTokens(
     @Req() req: Request,
+    @Res() res: Response,
     @GetCurUID() uid: string,
-    @GetCurUser('refreshToken') refreshToken: string,
+    @Cookies('refreshToken') refreshToken: string,
+    // @GetCurUser('refreshToken') refreshToken: string,
   ): Promise<ResponseAPI<ITokens>> {
+    console.log('refreshTokens', refreshToken, uid);
+
+    // if (!uid) throw new UnauthorizedException();
+
     const tokens = await this.authService.refreshTokens(uid, refreshToken);
     await this.authService.setTokensCookie(req, tokens);
     return {
@@ -81,6 +89,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async checkAuth(@GetCurUID() uid: string): Promise<boolean> {
     console.log(uid);
-    return true;
+    if (!uid) throw new UnauthorizedException();
+    return !!uid;
   }
 }

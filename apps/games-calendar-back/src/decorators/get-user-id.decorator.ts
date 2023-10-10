@@ -6,7 +6,7 @@ export const GetCurUID = createParamDecorator(
     if (ctx.getType() === 'http') {
       const request = ctx.switchToHttp().getRequest();
       const user = request.user as JwtPayload;
-      return user.sub;
+      return user?.sub;
     }
   },
 );

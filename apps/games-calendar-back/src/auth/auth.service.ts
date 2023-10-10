@@ -45,6 +45,7 @@ export class AuthService {
     }
 
     const tokens = await this.getTokens(user._id.toString(), user.email);
+    console.log(tokens);
     await this.updateRefreshToken(user._id.toString(), tokens.refreshToken);
 
     return {
@@ -149,6 +150,7 @@ export class AuthService {
 
   async setTokensCookie(req: Request, tokens: ITokens) {
     // if (tokens) {
+    console.log('setTokensCookie', tokens, req.res.cookie);
     req.res.cookie('accessToken', `${tokens.accessToken}`, {
       httpOnly: true,
       maxAge: 1000 * 60 * 30,

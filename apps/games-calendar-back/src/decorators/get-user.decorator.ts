@@ -5,6 +5,7 @@ export const GetCurUser = createParamDecorator(
   (data: keyof JwtPayloadWithRt | undefined, ctx: ExecutionContext) => {
     if (ctx.getType() === 'http') {
       const req = ctx.switchToHttp().getRequest();
+      console.log(req?.user);
       if (!data) return req.user;
 
       // if (!req?.user && data === 'refreshToken') return req.cookies[data];
