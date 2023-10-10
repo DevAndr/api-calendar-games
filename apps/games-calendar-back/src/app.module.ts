@@ -13,6 +13,7 @@ import { RefreshTokenStrategy } from '@server/auth/strategy/refresh-token.strate
 import { AccessTokenStrategy } from '@server/auth/strategy';
 import { JwtAuthGuard } from '@server/guards/jwt-auth.guard';
 import { CoreModule } from '@app/core';
+import { ScoresModule } from '@server/scores/scores.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { CoreModule } from '@app/core';
     GamesModule,
     UsersModule,
     ListsModule,
+    ScoresModule,
   ],
   controllers: [AppController],
   providers: [

@@ -28,7 +28,6 @@ export class ListsController {
     return this.listsService.findAll(uid);
   }
 
-  @PublicDecorator()
   @Get('findOneList/:id')
   async findOne(@Param('id') id: string) {
     return this.listsService.findOne(id);
@@ -39,7 +38,6 @@ export class ListsController {
     return this.listsService.update(updateListDto.id, updateListDto);
   }
 
-  @PublicDecorator()
   @Post('addGames/:id')
   async addGames(
     @Param('id') idList: string,
@@ -61,7 +59,6 @@ export class ListsController {
       }));
   }
 
-  @PublicDecorator()
   @Get('gamesByList/:id')
   async getGamesByIdList(
     @Param('id') idList: string,
@@ -78,7 +75,6 @@ export class ListsController {
     };
   }
 
-  @PublicDecorator()
   @Post('removeList')
   remove(@Payload() id: string) {
     return this.listsService.remove(id);
